@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Taskify - Smart Student Task Manager</title>
+
+<style>
+:root {
+    --primary:#F8C8DC;
+    --secondary:#CDE7F0;
+    --accent:#D5F4E6;
+    --text:#444;
+}
+
+body{
+    margin:0;
+    font-family: 'Segoe UI', sans-serif;
+    background:var(--secondary);
+    color:var(--text);
+}
+
+header{
+    background:var(--primary);
+    padding:15px;
+    text-align:center;
+    font-size:22px;
+    font-weight:bold;
+}
+
+nav{
+    display:flex;
+    justify-content:space-around;
+    background:white;
+    padding:10px;
+}
+
+nav button{
+    padding:8px 15px;
+    border:none;
+    background:var(--accent);
+    border-radius:10px;
+    cursor:pointer;
+}
+
+section{
+    display:none;
+    padding:20px;
+}
+
+.active{
+    display:block;
+}
+
+.card{
+    background:white;
+    padding:15px;
+    border-radius:15px;
+    margin-bottom:15px;
+    box-shadow:0 5px 10px rgba(0,0,0,0.1);
+}
+
+input,select,textarea{
+    width:100%;
+    padding:8px;
+    margin:5px 0;
+    border-radius:8px;
+    border:1px solid #ccc;
+}
+
+button.submit{
+    background:var(--primary);
+    border:none;
+    padding:10px;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.progress-ring{
+    width:120px;
+    height:120px;
+}
+
+.quote{
+    font-style:italic;
+    text-align:center;
+    margin-bottom:10px;
+}
+
+.theme-unlock{
+    background:var(--accent);
+    padding:10px;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>🌸 Taskify - Smart Student Task Manager</header>
+
+<div class="quote" id="quote"></div>
+
+<nav>
+<button onclick="showPage('login')">Login</button>
+<button onclick="showPage('dashboard')">Dashboard</button>
+<button onclick="showPage('teacher')">Teacher</button>
+<button onclick="showPage('progress')">Progress</button>
+</nav>
+
+<!-- LOGIN PAGE -->
+<section id="login" class="active">
+<div class="card">
+<h3>Login</h3>
+<select id="role">
+<option value="student">Student</option>
+<option value="teacher">Teacher</option>
+</select>
+<input type="text" id="username" placeholder="Username">
+<input type="password" id="password" placeholder="Password">
+<button class="submit" onclick="login()">Login</button>
+</div>
+</section>
+
+<!-- DASHBOARD -->
+<section id="dashboard">
+<div class="card">
+<h3>Add Task</h3>
+<input type="text" id="taskTitle" placeholder="Task Title">
+<input type="datetime-local" id="deadline">
+<button class="submit" onclick="addTask()">Add Task</button>
+</div>
+
+<div id="taskList"></div>
+
+<div class="card">
+<h3>Gamification</h3>
+Score: <span id="score">0</span>
+<div class="theme-unlock" onclick="unlockTheme()">Unlock Theme (100 pts)</div>
+</div>
+
+<div class="card">
+<h3>Query Faculty (WhatsApp Simulation)</h3>
+<textarea id="queryText"></textarea>
+<button class="submit" onclick="sendQuery()">Send Query</button>
+</div>
+
+<div class="card">
+<h3>Block / Report Faculty</h3>
+<input type="text" id="blockFaculty" placeholder="Faculty Name">
+<button class="submit" onclick="blockFaculty()">Block</button>
+</div>
+
+</section>
+
+<!-- TEACHER -->
+<section id="teacher">
+<div class="card">
+<h3>Create Assignment</h3>
+<input type="text" id="assignTitle" placeholder="Assignment Title">
+<input type="datetime-local" id="assignDeadline">
+<button class="submit" onclick="createAssignment()">Post Assignment</button>
+</div>
+</section>
+
+<!-- PROGRESS -->
+<section id="progress">
+<div class="card">
+<h3>Progress Tracker</h3>
+
+<svg class="progress-ring">
+<circle cx="60" cy="60" r="50" stroke="#eee" stroke-width="10" fill="transparent"/>
+<circle id="progressCircle" cx="60" cy="60" r="50" stroke="#F8C8DC" stroke-width="10" fill="transparent"
+stroke-dasharray="314"
+stroke-dashoffset="314"/>
+</svg>
+
+<p>Grade: <span id="grade">0</span></p>
+<p id="improve"></p>
+
+</div>
+</section>
+
+<script>
+
+// SPA Navigation
+function showPage(id){
+document.querySelectorAll("section").forEach(s=>s.classList.remove("active"))
+document.getElementById(id).classList.add("active")
+}
+
+// Quotes
+const quotes=[
+"Small progress is still progress 🌷",
+"Consistency beats motivation 🌼",
+"You are capable of amazing things 💫",
+"Dream big, work smart ✨"
+];
+document.getElementById("quote").innerText=quotes[Math.floor(Math.random()*quotes.length)]
+
+// DSA - Stack for completed tasks
+let completedStack=[];
+
+// DSA - Queue for notifications
+let notificationQueue=[];
+
+// Hashing - store tasks
+let taskHash={};
+
+let score=0;
+
+function login(){
+alert("Login Successful (Frontend Simulation)")
+showPage('dashboard')
+}
+
+// Add Task
+function addTask(){
+let title=document.getElementById("taskTitle").value;
+let deadline=document.getElementById("deadline").value;
+
+taskHash[title]=deadline;
+
+let div=document.createElement("div")
+div.className="card"
+div.innerHTML=`${title} <br> Deadline: ${deadline}
+<button onclick="completeTask('${title}')">Complete</button>`
+document.getElementById("taskList").appendChild(div)
+
+// Notification simulation
+scheduleNotification(title,deadline)
+}
+
+// Complete Task
+function completeTask(title){
+completedStack.push(title)
+score+=50;
+document.getElementById("score").innerText=score
+alert("Task Completed! +50 points 🎉")
+}
+
+// Unlock Theme
+function unlockTheme(){
+if(score>=100){
+document.documentElement.style.setProperty('--primary','#D5F4E6');
+alert("Theme Unlocked 🌸")
+}
+else{
+alert("Not enough score!")
+}
+}
+
+// Notifications Simulation
+function scheduleNotification(title,deadline){
+let time=new Date(deadline).getTime()
+let now=new Date().getTime()
+let diff=time-now
+
+notificationQueue.push(title)
+
+setTimeout(()=>alert("Reminder (1 Day Before) - "+title), diff-86400000)
+setTimeout(()=>alert("Reminder (2 Hours Before) - "+title), diff-7200000)
+setTimeout(()=>alert("Reminder (10 Min Before) - "+title), diff-600000)
+}
+
+// Teacher Post Assignment
+function createAssignment(){
+let title=document.getElementById("assignTitle").value
+let deadline=document.getElementById("assignDeadline").value
+alert("Assignment Posted!")
+scheduleNotification(title,deadline)
+}
+
+// Query Simulation
+function sendQuery(){
+let query=document.getElementById("queryText").value
+alert("Query sent to Faculty WhatsApp (Simulated)")
+}
+
+// Block Faculty
+function blockFaculty(){
+let name=document.getElementById("blockFaculty").value
+alert(name+" is blocked.")
+}
+
+// Progress Tracker
+function updateProgress(){
+let percent=score
+if(percent>100) percent=100
+let offset=314-(314*percent/100)
+document.getElementById("progressCircle").style.strokeDashoffset=offset
+document.getElementById("grade").innerText=percent+"%"
+
+if(percent<50){
+document.getElementById("improve").innerText="Focus more on completing tasks!"
+}else{
+document.getElementById("improve").innerText="Great work! Keep going!"
+}
+}
+
+setInterval(updateProgress,1000)
+
+</script>
+
+</body>
+</html>
