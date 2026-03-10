@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Taskify ✦</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root{--bg:#fdf6ff;--card:#fff;--pr:#c084fc;--pl:#e9d5ff;--se:#f9a8d4;--ac:#86efac;--a2:#fde68a;--a3:#93c5fd;--tx:#4b3a6b;--su:#9b8abf;--bd:#ede9fe;--re:#fb7185;--sh:0 4px 24px #c084fc18;--ra:16px;--fh:'Nunito',sans-serif;--fb:'Quicksand',sans-serif;}
+.to{--bg:#e0f2fe;--card:#fff;--pr:#38bdf8;--pl:#bae6fd;--se:#a5f3fc;--ac:#67e8f9;--tx:#0c4a6e;--su:#0284c7;--bd:#bae6fd;}
+.tf{--bg:#f0fdf4;--card:#fff;--pr:#4ade80;--pl:#bbf7d0;--se:#86efac;--ac:#a7f3d0;--tx:#14532d;--su:#16a34a;--bd:#bbf7d0;}
+.ts{--bg:#fff7ed;--card:#fff;--pr:#fb923c;--pl:#fed7aa;--se:#fbbf24;--ac:#fde68a;--tx:#7c2d12;--su:#ea580c;--bd:#fed7aa;}
+.tc{--bg:#fdf2f8;--card:#fff;--pr:#f472b6;--pl:#fbcfe8;--se:#c084fc;--ac:#a78bfa;--tx:#831843;--su:#db2777;--bd:#fbcfe8;}
+.tn{--bg:#1e1b4b;--card:#2e2b5e;--pr:#818cf8;--pl:#3730a3;--se:#a78bfa;--ac:#34d399;--tx:#e0e7ff;--su:#a5b4fc;--bd:#3730a3;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--fb);background:var(--bg);color:var(--tx);min-height:100vh;transition:background .3s,color .3s;}
+h1,h2,h3{font-family:var(--fh);}
+.page{display:none;}.page.on{display:block;}
+/* LOGIN */
+#pg-login{display:none;min-height:100vh;align-items:center;justify-content:center;background:linear-gradient(135deg,#fdf6ff,#fce7f3 50%,#ede9fe);}
+#pg-login.on{display:flex;}
+.lb{background:var(--card);border-radius:24px;padding:2.2rem 1.8rem;width:100%;max-width:400px;box-shadow:0 8px 48px #c084fc28;animation:up .4s;}
+.ll{text-align:center;margin-bottom:1.2rem;}.ll h1{font-size:2.2rem;font-weight:900;color:var(--pr);}.ll p{color:var(--su);font-size:.88rem;margin-top:3px;}
+.tabs{display:flex;background:var(--pl);border-radius:30px;padding:3px;margin-bottom:1.2rem;}
+.tab{flex:1;padding:8px;border:none;background:none;border-radius:27px;font-family:var(--fb);font-weight:700;font-size:.85rem;color:var(--su);cursor:pointer;transition:all .2s;}
+.tab.on{background:var(--pr);color:#fff;box-shadow:0 2px 8px #c084fc44;}
+.fw{display:none;}.fw.on{display:block;}
+.fg{margin-bottom:.8rem;}.fg label{display:block;font-weight:700;font-size:.72rem;color:var(--su);margin-bottom:3px;text-transform:uppercase;letter-spacing:.4px;}
+.fi{width:100%;padding:10px 13px;border:2px solid var(--bd);border-radius:11px;font-family:var(--fb);font-size:.93rem;background:var(--bg);color:var(--tx);transition:border .2s;outline:none;}
+.fi:focus{border-color:var(--pr);}
+textarea.fi{resize:vertical;min-height:66px;}
+select.fi{cursor:pointer;}
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:10px 18px;border:none;border-radius:12px;font-family:var(--fh);font-weight:800;font-size:.88rem;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.bp{background:var(--pr);color:#fff;width:100%;}.bp:hover{transform:translateY(-2px);box-shadow:0 5px 18px #c084fc44;}
+.bo{background:var(--pl);color:var(--pr);}.bo:hover{background:var(--pr);color:#fff;}
+.br{background:#ffe4e6;color:var(--re);}.br:hover{background:var(--re);color:#fff;}
+.bg{background:#d1fae5;color:#065f46;}.bg:hover{background:#059669;color:#fff;}
+.bsm{padding:6px 13px;font-size:.78rem;border-radius:9px;}
+.lbtn{background:none;border:none;color:var(--pr);font-weight:700;font-size:.8rem;cursor:pointer;font-family:var(--fb);text-decoration:underline;}
+/* NAV */
+.nav{background:var(--card);border-bottom:2px solid var(--bd);padding:0 1.3rem;display:flex;align-items:center;justify-content:space-between;height:58px;position:sticky;top:0;z-index:100;box-shadow:var(--sh);}
+.brand{font-family:var(--fh);font-weight:900;font-size:1.35rem;color:var(--pr);cursor:pointer;}
+.nr{display:flex;gap:.28rem;align-items:center;flex-wrap:wrap;}
+.nb{background:none;border:none;font-family:var(--fb);font-size:.8rem;font-weight:700;color:var(--su);cursor:pointer;padding:5px 9px;border-radius:28px;transition:all .2s;}
+.nb:hover,.nb.on{background:var(--pl);color:var(--pr);}
+.xpp{background:var(--pr);color:#fff;font-family:var(--fh);font-weight:800;font-size:.78rem;padding:5px 12px;border-radius:28px;white-space:nowrap;}
+.bell{background:none;border:none;font-size:1.2rem;cursor:pointer;position:relative;padding:4px;}
+.bd2{position:absolute;top:0;right:0;background:var(--re);color:#fff;font-size:.57rem;font-weight:900;border-radius:50%;width:14px;height:14px;display:flex;align-items:center;justify-content:center;}
+.tag{font-size:.67rem;background:var(--pl);color:var(--pr);border-radius:20px;padding:2px 7px;margin-left:4px;}
+/* BANNER */
+.ban{background:linear-gradient(135deg,var(--pl),var(--se) 60%,var(--a2));padding:9px 1.4rem;text-align:center;font-family:var(--fh);font-weight:700;font-size:.87rem;color:var(--tx);}
+/* LAYOUT */
+.wrap{padding:1.1rem 1.3rem;}
+.grid{display:grid;gap:.95rem;}
+.g2{grid-template-columns:repeat(auto-fit,minmax(255px,1fr));}
+.g4{grid-template-columns:repeat(auto-fit,minmax(155px,1fr));}
+.full{grid-column:1/-1;}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:.65rem;}
+@media(max-width:480px){.two{grid-template-columns:1fr;}.wrap{padding:.85rem .9rem;}}
+/* CARDS */
+.card{background:var(--card);border-radius:var(--ra);padding:1.1rem;box-shadow:var(--sh);border:1.5px solid var(--bd);transition:transform .2s;}
+.card:hover{transform:translateY(-2px);}
+.ct{font-family:var(--fh);font-weight:800;font-size:.92rem;margin-bottom:.8rem;display:flex;align-items:center;gap:6px;}
+.wc{background:linear-gradient(135deg,var(--pl),var(--se) 60%,var(--a2));display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;}
+.ph{padding:.85rem 1.3rem 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.55rem;}
+.ph h2{font-family:var(--fh);font-weight:900;font-size:1.25rem;}
+/* XP BAR */
+.xprow{display:flex;justify-content:space-between;font-size:.72rem;font-weight:700;color:var(--su);margin-bottom:3px;margin-top:6px;}
+.xpbg{background:var(--bd);border-radius:30px;height:9px;overflow:hidden;}
+.xpf{height:100%;background:linear-gradient(90deg,var(--pr),var(--se));border-radius:30px;transition:width .7s;}
+/* STAT */
+.sn{font-family:var(--fh);font-weight:900;font-size:1.6rem;color:var(--pr);}
+.sl{font-size:.75rem;color:var(--su);font-weight:600;margin-top:1px;}
+/* RING */
+.rw{display:flex;align-items:center;gap:1.1rem;flex-wrap:wrap;}
+.rc{position:relative;width:96px;height:96px;flex-shrink:0;}
+.rc svg{transform:rotate(-90deg);}
+.rbg{fill:none;stroke:var(--bd);stroke-width:9;}
+.rp{fill:none;stroke:var(--pr);stroke-width:9;stroke-linecap:round;transition:stroke-dashoffset .8s cubic-bezier(.4,0,.2,1);}
+.rl{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;}
+.rpct{font-family:var(--fh);font-weight:900;font-size:1.2rem;color:var(--pr);}
+.rsub{font-size:.58rem;color:var(--su);font-weight:600;}
+.rs{flex:1;}.ri{display:flex;align-items:center;gap:6px;margin-bottom:6px;font-size:.8rem;font-weight:600;}
+.rd{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+/* TASKS */
+.tl{display:flex;flex-direction:column;gap:.52rem;}
+.ti{background:var(--bg);border-radius:10px;padding:9px 11px;border-left:4px solid var(--pr);display:flex;align-items:flex-start;gap:7px;animation:up .25s;}
+.ti.done{opacity:.55;border-left-color:var(--ac);}
+.ti.ov{border-left-color:var(--re);}
+.tck{width:19px;height:19px;border-radius:50%;border:2px solid var(--pr);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;margin-top:1px;transition:all .2s;font-size:.7rem;}
+.tck.on{background:var(--ac);border-color:var(--ac);color:#fff;}
+.tin{flex:1;min-width:0;}
+.tn2{font-weight:700;font-size:.85rem;}
+.tm{font-size:.7rem;color:var(--su);margin-top:2px;display:flex;gap:5px;flex-wrap:wrap;align-items:center;}
+.cp{background:var(--pl);color:var(--pr);border-radius:18px;padding:1px 7px;font-size:.66rem;font-weight:700;}
+.cr{background:#ffe4e6;color:var(--re);border-radius:18px;padding:1px 7px;font-size:.66rem;font-weight:700;}
+.ta{display:flex;gap:4px;margin-top:4px;}
+.ib{background:none;border:none;cursor:pointer;font-size:.9rem;padding:2px 5px;border-radius:6px;transition:background .15s;}
+.ib:hover{background:var(--pl);}
+/* FILTERS */
+.fr{display:flex;gap:.32rem;padding:.65rem 1.3rem;flex-wrap:wrap;align-items:center;}
+.fc{padding:5px 11px;border-radius:28px;border:1.5px solid var(--bd);background:var(--card);color:var(--su);font-size:.73rem;font-weight:700;cursor:pointer;transition:all .2s;}
+.fc.on,.fc:hover{background:var(--pr);color:#fff;border-color:var(--pr);}
+/* TABLE */
+.gt{width:100%;border-collapse:collapse;font-size:.81rem;}
+.gt th{background:var(--pl);color:var(--pr);font-family:var(--fh);font-weight:800;padding:7px 10px;text-align:left;}
+.gt td{padding:7px 10px;border-bottom:1px solid var(--bd);}
+.gt tr:last-child td{border-bottom:none;}
+.gt tbody tr:hover{background:var(--bg);}
+.gp{border-radius:18px;padding:1px 8px;font-weight:800;font-size:.7rem;}
+.gA{background:#d1fae5;color:#065f46;}.gB{background:#dbeafe;color:#1e40af;}.gC{background:#fef3c7;color:#92400e;}.gD{background:#fee2e2;color:#991b1b;}
+/* THEMES */
+.tgr{display:grid;grid-template-columns:repeat(auto-fill,minmax(135px,1fr));gap:.8rem;padding:.85rem 1.3rem;}
+.thc{border-radius:13px;padding:.95rem;cursor:pointer;border:3px solid transparent;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:.45rem;text-align:center;position:relative;}
+.thc:hover:not(.lk){transform:scale(1.04);}
+.thc.lk{opacity:.5;cursor:not-allowed;}
+.thc.sel{border-color:var(--pr);box-shadow:0 0 0 3px var(--pl);}
+.thp{width:50px;height:50px;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 8px #0002;}
+.thn{font-weight:800;font-size:.8rem;}.thr{font-size:.66rem;color:var(--su);}
+/* BADGES */
+.bs{display:flex;gap:.45rem;flex-wrap:wrap;}
+.bd3{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.25rem;border:2.5px solid var(--bd);transition:transform .2s;cursor:default;position:relative;}
+.bd3:hover{transform:scale(1.16);}
+.bd3.lk{filter:grayscale(1);opacity:.35;}
+.bd3[title]:hover::after{content:attr(title);position:absolute;bottom:110%;left:50%;transform:translateX(-50%);background:var(--tx);color:#fff;border-radius:7px;padding:3px 8px;font-size:.63rem;white-space:nowrap;z-index:20;font-family:var(--fb);}
+/* NOTIF */
+.ni{background:var(--card);border-radius:10px;padding:9px 12px;border-left:4px solid var(--pr);display:flex;gap:8px;margin-bottom:.5rem;}
+.ni.u{border-left-color:var(--re);background:#fff1f2;}
+.ni.s{border-left-color:var(--ac);}
+.ni.gd{border-left-color:var(--a3);}
+/* MODAL */
+.mo{display:none;position:fixed;inset:0;background:#0007;z-index:200;align-items:center;justify-content:center;}
+.mo.on{display:flex;}
+.mb{background:var(--card);border-radius:19px;padding:1.6rem;width:94%;max-width:430px;box-shadow:0 16px 60px #0003;animation:up .28s;max-height:92vh;overflow-y:auto;}
+.mt2{font-family:var(--fh);font-weight:900;font-size:1.1rem;margin-bottom:.95rem;display:flex;justify-content:space-between;align-items:center;}
+.mx{background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--su);}
+/* TOAST */
+#toasts{position:fixed;bottom:18px;right:18px;z-index:300;display:flex;flex-direction:column;gap:.4rem;}
+.toast{background:var(--card);border-radius:11px;padding:10px 14px;box-shadow:0 4px 18px #0002;border-left:4px solid var(--pr);font-size:.81rem;font-weight:700;animation:up .25s;max-width:290px;display:flex;align-items:center;gap:7px;}
+.tok{border-left-color:var(--ac);}.terr{border-left-color:var(--re);}
+.chb{position:relative;height:185px;}.chb canvas{max-height:185px;}
+.sc{background:var(--card);border-radius:var(--ra);padding:1.1rem;box-shadow:var(--sh);border:1.5px solid var(--bd);margin-bottom:.85rem;}
+.empty{text-align:center;padding:1.1rem;color:var(--su);font-size:.83rem;}
+.bi{display:flex;align-items:center;gap:9px;background:var(--card);border-radius:10px;padding:9px 12px;border:1.5px solid var(--bd);margin-bottom:.5rem;}
+.av{width:32px;height:32px;border-radius:50%;background:var(--pl);display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0;}
+.im{display:flex;align-items:center;gap:7px;padding:7px 10px;background:#fff7ed;border-radius:8px;margin-bottom:5px;font-size:.82rem;font-weight:600;}
+@keyframes up{from{transform:translateY(15px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:var(--bd);}::-webkit-scrollbar-thumb{background:var(--pr);border-radius:8px;}
+</style>
+</head>
+<body>
+
+<div id="toasts"></div>
+
+<!-- MODALS -->
+<div class="mo" id="mo-notif"><div class="mb" style="max-width:490px;"><div class="mt2">🔔 Notifications <button class="mx" onclick="cmo('mo-notif')">✕</button></div><div id="notif-list"></div></div></div>
+
+<div class="mo" id="mo-task"><div class="mb">
+  <div class="mt2">➕ New Task <button class="mx" onclick="cmo('mo-task')">✕</button></div>
+  <div class="fg"><label>Task Name *</label><input class="fi" id="t-name" placeholder="e.g. Linked List Lab"></div>
+  <div class="two"><div class="fg"><label>Subject</label><input class="fi" id="t-subj" placeholder="DSA"></div><div class="fg"><label>XP Points</label><input class="fi" type="number" id="t-pts" value="50" min="10" max="500"></div></div>
+  <div class="two"><div class="fg"><label>Deadline Date</label><input class="fi" type="date" id="t-date"></div><div class="fg"><label>Time</label><input class="fi" type="time" id="t-time" value="23:59"></div></div>
+  <div class="fg"><label>Faculty WhatsApp</label><input class="fi" type="tel" id="t-fac" placeholder="+91XXXXXXXXXX"></div>
+  <button class="btn bp" onclick="addTask()">Add Task ✦</button>
+</div></div>
+
+<div class="mo" id="mo-assign"><div class="mb">
+  <div class="mt2">📋 New Assignment <button class="mx" onclick="cmo('mo-assign')">✕</button></div>
+  <div class="fg"><label>Title *</label><input class="fi" id="a-title" placeholder="e.g. Binary Search Lab"></div>
+  <div class="fg"><label>Subject</label><input class="fi" id="a-subj" placeholder="DSA"></div>
+  <div class="fg"><label>Description</label><textarea class="fi" id="a-desc" placeholder="Details..."></textarea></div>
+  <div class="two"><div class="fg"><label>Deadline Date</label><input class="fi" type="date" id="a-date"></div><div class="fg"><label>Time</label><input class="fi" type="time" id="a-time" value="23:59"></div></div>
+  <div class="fg"><label>Max Marks</label><input class="fi" type="number" id="a-marks" value="100"></div>
+  <button class="btn bp" onclick="addAssignment()">Post Assignment ✦</button>
+</div></div>
+
+<div class="mo" id="mo-query"><div class="mb">
+  <div class="mt2">💬 Send Query <button class="mx" onclick="cmo('mo-query')">✕</button></div>
+  <p id="q-info" style="font-size:.81rem;color:var(--su);margin-bottom:.85rem;"></p>
+  <div class="fg"><label>Your Query *</label><textarea class="fi" id="q-text" rows="4" placeholder="Type your question..."></textarea></div>
+  <button class="btn bp" onclick="sendQueryMo()">Send via WhatsApp 📲</button>
+</div></div>
+
+<!-- LOGIN -->
+<div id="pg-login" class="page">
+  <div class="lb">
+    <div class="ll"><h1>✦ Taskify</h1><p>Your academic journey, gamified 🎮</p></div>
+    <div class="tabs">
+      <button class="tab on" id="tab-s" onclick="swTab('student')">🎓 Student</button>
+      <button class="tab" id="tab-t" onclick="swTab('teacher')">👩‍🏫 Teacher</button>
+    </div>
+    <div class="fw on" id="fw-s">
+      <div class="fg"><label>Full Name</label><input class="fi" id="sn" placeholder="Your name"></div>
+      <div class="fg"><label>Email</label><input class="fi" type="email" id="se" placeholder="student@college.edu"></div>
+      <div class="fg"><label>Password</label><input class="fi" type="password" id="sp" placeholder="Min 4 characters"></div>
+      <div class="fg"><label>WhatsApp</label><input class="fi" type="tel" id="sph" placeholder="+91XXXXXXXXXX"></div>
+      <button class="btn bp" onclick="doAuth('student','reg')">Register & Login 🚀</button>
+      <p style="text-align:center;margin-top:.65rem;font-size:.78rem;color:var(--su);">Have an account? <button class="lbtn" onclick="doAuth('student','login')">Login →</button></p>
+    </div>
+    <div class="fw" id="fw-t">
+      <div class="fg"><label>Full Name</label><input class="fi" id="tn" placeholder="Prof. Name"></div>
+      <div class="fg"><label>Email</label><input class="fi" type="email" id="te" placeholder="faculty@college.edu"></div>
+      <div class="fg"><label>Password</label><input class="fi" type="password" id="tp" placeholder="Min 4 characters"></div>
+      <div class="fg"><label>WhatsApp</label><input class="fi" type="tel" id="tph" placeholder="+91XXXXXXXXXX"></div>
+      <button class="btn bp" onclick="doAuth('teacher','reg')">Register & Login 👩‍🏫</button>
+      <p style="text-align:center;margin-top:.65rem;font-size:.78rem;color:var(--su);">Have an account? <button class="lbtn" onclick="doAuth('teacher','login')">Login →</button></p>
+    </div>
+  </div>
+</div>
+
+<!-- STUDENT APP -->
+<div id="pg-stu" class="page">
+  <div class="ban" id="quote-ban">✨ Loading inspiration...</div>
+  <nav class="nav">
+    <span class="brand" onclick="go('dash')">✦ Taskify</span>
+    <div class="nr">
+      <button class="nb on" id="nb-dash"    onclick="go('dash')">🏠 Home</button>
+      <button class="nb"    id="nb-tasks"   onclick="go('tasks')">📋 Tasks</button>
+      <button class="nb"    id="nb-prog"    onclick="go('prog')">📊 Progress</button>
+      <button class="nb"    id="nb-themes"  onclick="go('themes')">🎨 Themes</button>
+      <button class="nb"    id="nb-queries" onclick="go('queries')">💬 Queries</button>
+      <button class="nb"    id="nb-safety"  onclick="go('safety')">🛡️</button>
+      <button class="bell"  onclick="openNotifs()">🔔<span class="bd2" id="nbadge">0</span></button>
+      <div class="xpp" id="xp-pill">⭐ 0 XP</div>
+      <button class="btn br bsm" onclick="logout()">Logout</button>
+    </div>
+  </nav>
+
+  <!-- DASHBOARD -->
+  <div id="v-dash">
+    <div class="wrap grid g2">
+      <div class="card wc full">
+        <div>
+          <h2 style="font-size:1.25rem;font-weight:900;">Hey, <span id="s-hello">Student</span>! 👋</h2>
+          <p style="color:var(--su);margin-top:2px;font-size:.85rem;">Ready to conquer today?</p>
+          <div class="xprow"><span>Level <span id="s-lvl">1</span></span><span id="xp-txt">0 / 500 XP</span></div>
+          <div class="xpbg"><div class="xpf" id="xp-bar" style="width:0%"></div></div>
+        </div>
+        <button class="btn bp" style="width:auto;" onclick="omo('mo-task')">+ Add Task</button>
+      </div>
+      <div class="card">
+        <div class="ct">📈 Completion Ring</div>
+        <div class="rw">
+          <div class="rc">
+            <svg width="96" height="96" viewBox="0 0 96 96"><circle class="rbg" cx="48" cy="48" r="38"/><circle class="rp" id="d-ring" cx="48" cy="48" r="38" stroke-dasharray="239" stroke-dashoffset="239"/></svg>
+            <div class="rl"><div class="rpct" id="d-pct">0%</div><div class="rsub">Done</div></div>
+          </div>
+          <div class="rs">
+            <div class="ri"><div class="rd" style="background:var(--pr)"></div><span id="r-tot">0 Total</span></div>
+            <div class="ri"><div class="rd" style="background:var(--ac)"></div><span id="r-dn">0 Done</span></div>
+            <div class="ri"><div class="rd" style="background:var(--re)"></div><span id="r-pe">0 Pending</span></div>
+            <div class="ri"><div class="rd" style="background:#f97316"></div><span id="r-ov">0 Overdue</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ct">🏅 Quick Stats</div>
+        <div class="grid g4" style="gap:.65rem;">
+          <div><div class="sn" id="st-tot">0</div><div class="sl">Tasks</div></div>
+          <div><div class="sn" id="st-dn" style="color:var(--ac)">0</div><div class="sl">Done</div></div>
+          <div><div class="sn" id="st-xp" style="color:var(--se)">0</div><div class="sl">XP</div></div>
+          <div><div class="sn" id="st-lv" style="color:var(--a3)">1</div><div class="sl">Level</div></div>
+        </div>
+      </div>
+      <div class="card"><div class="ct">📅 Weekly Activity</div><div class="chb"><canvas id="wk-chart"></canvas></div></div>
+      <div class="card"><div class="ct">📚 Subject Breakdown</div><div class="chb" id="sb-wrap"><canvas id="sb-chart"></canvas></div></div>
+      <div class="card">
+        <div class="ct">⏰ Upcoming Deadlines</div>
+        <div class="tl" id="up-list"><div class="empty">No upcoming tasks 🎉</div></div>
+      </div>
+      <div class="card"><div class="ct">🏆 Badges</div><div class="bs" id="badge-shelf"></div></div>
+    </div>
+  </div>
+
+  <!-- TASKS -->
+  <div id="v-tasks" style="display:none;">
+    <div class="ph"><h2>📋 My Tasks</h2><button class="btn bp bsm" onclick="omo('mo-task')">+ New Task</button></div>
+    <div class="fr">
+      <span style="font-weight:700;font-size:.72rem;color:var(--su);">Filter:</span>
+      <div class="fc on" onclick="flt('all',this)">All</div>
+      <div class="fc" onclick="flt('pending',this)">Pending</div>
+      <div class="fc" onclick="flt('done',this)">Completed</div>
+      <div class="fc" onclick="flt('overdue',this)">Overdue</div>
+    </div>
+    <div class="wrap" style="padding-top:0;"><div class="tl" id="task-list"></div></div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div id="v-prog" style="display:none;">
+    <div class="ph"><h2>📊 Progress & Grades</h2></div>
+    <div class="wrap grid g2">
+      <div class="card">
+        <div class="ct">🎯 Overall Score</div>
+        <div class="rw">
+          <div class="rc">
+            <svg width="96" height="96" viewBox="0 0 96 96"><circle class="rbg" cx="48" cy="48" r="38"/><circle class="rp" id="p-ring" cx="48" cy="48" r="38" stroke-dasharray="239" stroke-dashoffset="239" style="stroke:var(--ac);"/></svg>
+            <div class="rl"><div class="rpct" id="p-pct" style="color:var(--ac)">0%</div><div class="rsub">Done</div></div>
+          </div>
+          <div class="rs">
+            <div class="ri"><div class="rd" style="background:var(--pr)"></div><span id="p-xp">XP: 0</span></div>
+            <div class="ri"><div class="rd" style="background:var(--se)"></div><span id="p-avg">Avg: N/A</span></div>
+            <div class="ri"><div class="rd" style="background:var(--ac)"></div><span id="p-dn">Done: 0</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="card"><div class="ct">📈 Grade Distribution</div><div class="chb"><canvas id="gd-chart"></canvas></div></div>
+      <div class="card full"><div class="ct">📚 Subject Progress Rings</div><div id="s-rings" style="display:flex;flex-wrap:wrap;gap:1.2rem;padding:.3rem 0;align-items:flex-start;"></div></div>
+      <div class="card full"><div class="ct">📝 Assignment Grades</div><div style="overflow-x:auto;"><table class="gt"><thead><tr><th>Assignment</th><th>Subject</th><th>Marks</th><th>Grade</th><th>Feedback</th></tr></thead><tbody id="grade-rows"><tr><td colspan="5" class="empty">No grades yet</td></tr></tbody></table></div></div>
+      <div class="card full"><div class="ct">🔍 Areas to Improve</div><div id="imp-list"><div class="im">✅ Complete tasks to see improvement tips!</div></div></div>
+    </div>
+  </div>
+
+  <!-- THEMES -->
+  <div id="v-themes" style="display:none;">
+    <div class="ph"><h2>🎨 Themes</h2></div>
+    <p style="padding:.3rem 1.3rem;color:var(--su);font-size:.81rem;">Earn XP to unlock themes. Your XP: <strong id="th-xp">0</strong></p>
+    <div class="tgr" id="theme-grid"></div>
+  </div>
+
+  <!-- QUERIES -->
+  <div id="v-queries" style="display:none;">
+    <div class="ph"><h2>💬 Queries</h2></div>
+    <div class="wrap">
+      <div class="sc">
+        <div class="ct">📨 Send Query to Faculty</div>
+        <div class="fg"><label>Select Task</label><select class="fi" id="q-sel"><option value="">-- Choose a task --</option></select></div>
+        <div class="fg"><label>Your Query</label><textarea class="fi" id="q-dir" rows="3" placeholder="Type your question..."></textarea></div>
+        <button class="btn bo bsm" onclick="sendDirect()">Send via WhatsApp 📲</button>
+      </div>
+      <div class="sc"><div class="ct">📬 Query History</div><div id="q-hist"><div class="empty">No queries sent yet.</div></div></div>
+    </div>
+  </div>
+
+  <!-- SAFETY -->
+  <div id="v-safety" style="display:none;">
+    <div class="ph"><h2>🛡️ Safety Centre</h2></div>
+    <div class="wrap">
+      <div class="sc">
+        <div class="ct">🚩 Report / Block Faculty</div>
+        <div class="fg"><label>Faculty Name *</label><input class="fi" id="sf-n" placeholder="Faculty name"></div>
+        <div class="fg"><label>Faculty WhatsApp</label><input class="fi" type="tel" id="sf-ph" placeholder="+91XXXXXXXXXX"></div>
+        <div class="fg"><label>Reason</label><textarea class="fi" id="sf-r" rows="3" placeholder="Describe the issue..."></textarea></div>
+        <div style="display:flex;gap:.55rem;flex-wrap:wrap;">
+          <button class="btn bo bsm" onclick="doReport()">Submit Report</button>
+          <button class="btn br bsm" onclick="doBlock()">Block Faculty 🚫</button>
+        </div>
+      </div>
+      <div class="sc"><div class="ct">🚫 Blocked Faculty</div><div id="bl-list"><div class="empty">No faculty blocked.</div></div></div>
+    </div>
+  </div>
+</div><!-- /student -->
+
+<!-- TEACHER APP -->
+<div id="pg-tch" class="page">
+  <nav class="nav">
+    <span class="brand">✦ Taskify<span class="tag">Teacher</span></span>
+    <div class="nr">
+      <button class="nb on" id="tnb-a" onclick="tgo('a')">📋 Assignments</button>
+      <button class="nb"    id="tnb-g" onclick="tgo('g')">📊 Grades</button>
+      <button class="nb"    id="tnb-s" onclick="tgo('s')">👥 Students</button>
+      <button class="nb"    id="tnb-q" onclick="tgo('q')">💬 Queries</button>
+      <button class="nb"    id="tnb-r" onclick="tgo('r')">🚩 Reports</button>
+      <div class="xpp">👩‍🏫 <span id="tc-hello">Teacher</span></div>
+      <button class="btn br bsm" onclick="logout()">Logout</button>
+    </div>
+  </nav>
+  <div id="tv-a"><div class="ph"><h2>📋 Assignments</h2><button class="btn bp bsm" onclick="omo('mo-assign')">+ New</button></div><div class="wrap" id="tc-alist"><div class="empty">No assignments yet.</div></div></div>
+  <div id="tv-g" style="display:none;"><div class="ph"><h2>📊 Grade Students</h2></div><div class="wrap" id="tc-gpanel"><div class="empty">Post assignments first.</div></div></div>
+  <div id="tv-s" style="display:none;"><div class="ph"><h2>👥 Students</h2></div><div class="wrap"><div class="sc"><div style="overflow-x:auto;"><table class="gt"><thead><tr><th>Name</th><th>Email</th><th>XP</th><th>Level</th></tr></thead><tbody id="tc-stbl"><tr><td colspan="4" class="empty">No students yet.</td></tr></tbody></table></div></div></div></div>
+  <div id="tv-q" style="display:none;"><div class="ph"><h2>💬 Student Queries</h2></div><div class="wrap"><div class="sc" style="background:var(--pl);border:none;padding:.9rem;margin-bottom:.8rem;"><p style="font-size:.83rem;margin-bottom:.3rem;">Queries sent to your WhatsApp — reply directly from there.</p><strong>📲 WhatsApp: <span id="tc-wa">—</span></strong></div><div id="tc-qlist"><div class="empty">No queries.</div></div></div></div>
+  <div id="tv-r" style="display:none;"><div class="ph"><h2>🚩 Reports</h2></div><div class="wrap" id="tc-rlist"><div class="empty">No reports.</div></div></div>
+</div><!-- /teacher -->
+
+<script>
+'use strict';
+// ══ STATE ══════════════════════════════════════════════════════
+let CU=null, taskFilter='all', qTaskId=null;
+let wCh=null, sCh=null, gCh=null;
+
+const QUOTES=['✨ Small steps every day lead to big achievements!','🚀 Believe in yourself — you\'ve got this!','📚 Knowledge is the key to unlocking your future.','💡 Every task completed is a step closer to your dreams.','🌟 Consistency beats perfection. Keep going!','🔥 Your hard work today is your success tomorrow.','🎯 Focus on progress, not perfection.','🌈 The best time to start is right now!','💪 Challenges are just opportunities in disguise.','⚡ You are stronger than you think. Keep pushing!'];
+
+const THEMES=[
+  {id:'default',n:'Lavender Dream',c:'#c084fc',bg:'#fdf6ff',req:0,cls:''},
+  {id:'ocean',  n:'Ocean Breeze',  c:'#38bdf8',bg:'#e0f2fe',req:200,cls:'to'},
+  {id:'forest', n:'Forest Walk',   c:'#4ade80',bg:'#f0fdf4',req:500,cls:'tf'},
+  {id:'sunset', n:'Sunset Glow',   c:'#fb923c',bg:'#fff7ed',req:800,cls:'ts'},
+  {id:'candy',  n:'Candy Pop',     c:'#f472b6',bg:'#fdf2f8',req:1200,cls:'tc'},
+  {id:'night',  n:'Midnight Study',c:'#818cf8',bg:'#1e1b4b',req:2000,cls:'tn'},
+];
+
+const BDGS=[
+  {id:'b1',em:'🌟',n:'First Task',  t:'tasks',req:1},
+  {id:'b2',em:'🔥',n:'5 Tasks',     t:'tasks',req:5},
+  {id:'b3',em:'💪',n:'10 Tasks',    t:'tasks',req:10},
+  {id:'b4',em:'⭐',n:'100 XP',      t:'score',req:100},
+  {id:'b5',em:'🏅',n:'500 XP',      t:'score',req:500},
+  {id:'b6',em:'🏆',n:'1000 XP',     t:'score',req:1000},
+];
+
+// ══ STORAGE ════════════════════════════════════════════════════
+const S={
+  g:(k,d)=>{try{const v=localStorage.getItem('tf4_'+k);return v==null?d:JSON.parse(v);}catch{return d;}},
+  s:(k,v)=>localStorage.setItem('tf4_'+k,JSON.stringify(v)),
+  r:(k)=>localStorage.removeItem('tf4_'+k),
+};
+const users=()=>S.g('u',[]);
+const tasks=()=>S.g('t',[]);
+const assigns=()=>S.g('as',[]);
+const grades=()=>S.g('gr',[]);
+const blocks=()=>S.g('bl',[]);
+const reports=()=>S.g('rp',[]);
+const queries=()=>S.g('qr',[]);
+const notifs=uid=>S.g('n_'+uid,[]);
+
+function saveU(u){const us=users();const i=us.findIndex(x=>x.id===u.id);if(i>-1)us[i]=u;else us.push(u);S.s('u',us);}
+function pNotif(uid,msg,type='i'){const ns=notifs(uid);ns.unshift({id:Date.now(),msg,type,r:0,at:new Date().toISOString()});S.s('n_'+uid,ns.slice(0,50));if(CU&&CU.id===uid)updBadge();}
+
+// ══ PASSWORD HASH ═══════════════════════════════════════════════
+function hp(pw){let h=5381;for(let i=0;i<pw.length;i++)h=((h<<5)+h)^pw.charCodeAt(i);return'h'+Math.abs(h)+'_'+pw.length;}
+
+// ══ HELPERS ════════════════════════════════════════════════════
+const g=id=>document.getElementById(id);
+function toast(msg,tp='ok'){const e=document.createElement('div');e.className='toast '+(tp==='ok'?'tok':'terr');e.innerHTML=(tp==='ok'?'✅':'❌')+' '+msg;g('toasts').appendChild(e);setTimeout(()=>e.remove(),4000);}
+function omo(id){g(id).classList.add('on');}
+function cmo(id){g(id).classList.remove('on');}
+window.addEventListener('click',e=>{if(e.target.classList.contains('mo'))e.target.classList.remove('on');});
+function fmt(dl){if(!dl)return'';return new Date(dl).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});}
+
+// ══ AUTH ═══════════════════════════════════════════════════════
+function swTab(r){
+  g('tab-s').classList.toggle('on',r==='student');
+  g('tab-t').classList.toggle('on',r==='teacher');
+  g('fw-s').classList.toggle('on',r==='student');
+  g('fw-t').classList.toggle('on',r==='teacher');
+}
+
+function doAuth(role,action){
+  const isS=role==='student';
+  const email=(g(isS?'se':'te').value||'').trim().toLowerCase();
+  const pass=g(isS?'sp':'tp').value||'';
+  if(!email){toast('Please enter your email address.','err');return;}
+  if(!pass||pass.length<4){toast('Password must be at least 4 characters.','err');return;}
+
+  const us=users();
+
+  if(action==='reg'){
+    const name=(g(isS?'sn':'tn').value||'').trim();
+    const phone=(g(isS?'sph':'tph').value||'').trim();
+    if(!name){toast('Please enter your name.','err');return;}
+    if(us.find(u=>u.email===email)){toast('Email already registered. Click Login → below.','err');return;}
+    const user={id:Date.now(),name,email,pw:hp(pass),phone,role,score:0,level:1,theme:'default'};
+    saveU(user);
+    CU={...user};delete CU.pw;
+    S.s('sess',CU);
+    pNotif(CU.id,'Welcome to Taskify, '+name+'! 🎉','s');
+    toast('Welcome, '+name+'! Account created 🎉');
+    boot();
+  } else {
+    const u=us.find(x=>x.email===email);
+    if(!u){toast('No account found. Please register first.','err');return;}
+    if(u.pw!==hp(pass)){toast('Wrong password. Please try again.','err');return;}
+    CU={...u};delete CU.pw;
+    S.s('sess',CU);
+    toast('Welcome back, '+CU.name+'! 👋');
+    boot();
+  }
+}
+
+function logout(){CU=null;S.r('sess');showPg('pg-login');}
+
+// ══ PAGES ══════════════════════════════════════════════════════
+function showPg(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));g(id).classList.add('on');}
+
+function boot(){
+  if(!CU)return;
+  if(CU.role==='teacher'){
+    showPg('pg-tch');
+    g('tc-hello').textContent=CU.name;
+    g('tc-wa').textContent=CU.phone||'—';
+    tgo('a');
+  } else {
+    showPg('pg-stu');
+    g('s-hello').textContent=CU.name;
+    applyTheme(CU.theme||'default');
+    rotQ(); setInterval(rotQ,20000);
+    go('dash');
+    updBadge(); setInterval(updBadge,30000);
+  }
+}
+
+// ══ STUDENT NAV ════════════════════════════════════════════════
+const SVWS=['dash','tasks','prog','themes','queries','safety'];
+const SNBS=['nb-dash','nb-tasks','nb-prog','nb-themes','nb-queries','nb-safety'];
+function go(sec){
+  SVWS.forEach((v,i)=>{
+    g('v-'+v).style.display=v===sec?'block':'none';
+    if(g(SNBS[i]))g(SNBS[i]).classList.toggle('on',v===sec);
+  });
+  if(sec==='dash')   loadDash();
+  if(sec==='tasks')  {loadTasks();fillQSel();}
+  if(sec==='prog')   loadProg();
+  if(sec==='themes') renderThemes();
+  if(sec==='queries'){fillQSel();loadQHist();}
+  if(sec==='safety') loadBlocked();
+}
+
+// ══ TEACHER NAV ════════════════════════════════════════════════
+function tgo(sec){
+  ['a','g','s','q','r'].forEach(v=>{g('tv-'+v).style.display=v===sec?'block':'none';g('tnb-'+v).classList.toggle('on',v===sec);});
+  if(sec==='g')renderGP();
+  if(sec==='s')renderStuTbl();
+  if(sec==='q')renderTQ();
+  if(sec==='r')renderRep();
+}
+
+// ══ THEME ══════════════════════════════════════════════════════
+function applyTheme(id){const th=THEMES.find(t=>t.id===id);document.body.className=th?th.cls:'';}
+function getScore(){return(users().find(u=>u.id===CU.id)||{score:0}).score||0;}
+
+function renderThemes(){
+  const sc=getScore();
+  if(g('th-xp'))g('th-xp').textContent=sc;
+  g('theme-grid').innerHTML=THEMES.map(th=>{
+    const ok=sc>=th.req,sel=(CU.theme||'default')===th.id;
+    return`<div class="thc ${ok?'':'lk'} ${sel?'sel':''}" onclick="${ok?`pickTheme('${th.id}')`:''}" style="background:${th.bg};">
+      ${!ok?'<span style="position:absolute;top:6px;right:6px;">🔒</span>':''}
+      <div class="thp" style="background:${th.c};"></div>
+      <div class="thn" style="color:${th.c};">${th.n}</div>
+      <div class="thr">${th.req?'🔓 '+th.req+' XP':'Free 🆓'}</div>
+    </div>`;
+  }).join('');
+}
+
+function pickTheme(id){
+  const sc=getScore(),th=THEMES.find(t=>t.id===id);
+  if(!th||sc<th.req){toast('Need '+th.req+' XP to unlock!','err');return;}
+  const us=users(),i=us.findIndex(u=>u.id===CU.id);
+  if(i>-1){us[i].theme=id;S.s('u',us);}
+  CU.theme=id;S.s('sess',CU);
+  applyTheme(id);renderThemes();toast('Theme applied! 🎨');
+}
+
+// ══ XP ═════════════════════════════════════════════════════════
+function updXP(){
+  const u=users().find(x=>x.id===CU.id)||{score:0,level:1};
+  const sc=u.score||0,lv=u.level||1,inLv=sc%500;
+  if(g('xp-pill'))g('xp-pill').textContent='⭐ '+sc+' XP';
+  if(g('s-lvl'))  g('s-lvl').textContent=lv;
+  if(g('xp-txt')) g('xp-txt').textContent=inLv+' / 500 XP';
+  if(g('xp-bar')) g('xp-bar').style.width=(inLv/5)+'%';
+  if(g('st-xp'))  g('st-xp').textContent=sc;
+  if(g('st-lv'))  g('st-lv').textContent=lv;
+  if(g('th-xp'))  g('th-xp').textContent=sc;
+  CU.score=sc;CU.level=lv;S.s('sess',CU);
+}
+
+function addXP(pts){
+  const us=users(),i=us.findIndex(u=>u.id===CU.id);if(i===-1)return;
+  const old=us[i].level||1;
+  us[i].score=(us[i].score||0)+pts;
+  us[i].level=Math.floor(us[i].score/500)+1;
+  S.s('u',us);
+  if(us[i].level>old)toast('🎉 Level Up! Now Level '+us[i].level+'!');
+  updXP();chkBdgs();
+}
+
+// ══ BADGES ═════════════════════════════════════════════════════
+function chkBdgs(){
+  const u=users().find(x=>x.id===CU.id)||{score:0};
+  const dn=tasks().filter(t=>t.uid===CU.id&&t.done).length;
+  const earned=S.g('bdg_'+CU.id,[]);
+  BDGS.forEach(b=>{
+    if(earned.includes(b.id))return;
+    if((b.t==='tasks'?dn:(u.score||0))>=b.req){earned.push(b.id);toast('🏆 Badge: '+b.em+' '+b.n+'!');}
+  });
+  S.s('bdg_'+CU.id,earned);
+}
+
+function renderBdgs(){
+  const earned=S.g('bdg_'+CU.id,[]);
+  if(g('badge-shelf'))g('badge-shelf').innerHTML=BDGS.map(b=>`<div class="bd3 ${earned.includes(b.id)?'':'lk'}" title="${b.n}">${b.em}</div>`).join('');
+}
+
+// ══ NOTIFICATIONS ══════════════════════════════════════════════
+function updBadge(){const ns=notifs(CU?.id||0),un=ns.filter(n=>!n.r).length;if(g('nbadge'))g('nbadge').textContent=Math.min(un,99);}
+function openNotifs(){
+  const ns=notifs(CU.id);
+  g('notif-list').innerHTML=ns.length?ns.slice(0,20).map(n=>`<div class="ni ${n.type==='s'?'s':n.type==='u'?'u':n.type==='gd'?'gd':''}">
+    <span style="font-size:1.05rem;">${n.type==='s'?'✅':n.type==='u'?'🚨':n.type==='gd'?'📊':'🔔'}</span>
+    <div><strong style="font-size:.83rem;">${n.msg}</strong><br><small style="color:var(--su);">${new Date(n.at).toLocaleString()}</small></div>
+  </div>`).join(''):'<div class="empty">No notifications 🔕</div>';
+  S.s('n_'+CU.id,ns.map(n=>({...n,r:1})));
+  omo('mo-notif');updBadge();
+}
+
+function rotQ(){const e=g('quote-ban');if(e)e.textContent=QUOTES[Math.floor(Math.random()*QUOTES.length)];}
+
+// ══ TASKS ══════════════════════════════════════════════════════
+function addTask(){
+  const name=(g('t-name').value||'').trim();
+  if(!name){toast('Task name is required!','err');return;}
+  const subj=(g('t-subj').value||'').trim();
+  const pts=parseInt(g('t-pts').value)||50;
+  const dt=g('t-date').value,tm=g('t-time').value||'23:59';
+  const dl=dt?dt+'T'+tm:'';
+  const fac=(g('t-fac').value||'').trim();
+  const ts=tasks();
+  const task={id:Date.now(),uid:CU.id,name,subj,pts,dl,fac,done:false,doneAt:null,grade:null,marks:null,mxM:null,at:new Date().toISOString()};
+  ts.unshift(task);S.s('t',ts);
+  cmo('mo-task');toast('Task added! 📋');
+  ['t-name','t-subj','t-fac'].forEach(id=>{if(g(id))g(id).value='';});
+  if(g('t-pts'))g('t-pts').value='50';
+  if(g('t-date'))g('t-date').value='';
+  if(g('t-time'))g('t-time').value='23:59';
+  loadDash();loadTasks();fillQSel();
+  if(dl)schedWA(task);
+}
+
+function completeTask(id){
+  const ts=tasks(),i=ts.findIndex(t=>t.id===id&&t.uid===CU.id);
+  if(i===-1||ts[i].done)return;
+  ts[i].done=true;ts[i].doneAt=new Date().toISOString();S.s('t',ts);
+  const pts=ts[i].pts||50;addXP(pts);
+  toast('✅ "'+ts[i].name+'" done! +'+pts+' XP');
+  pNotif(CU.id,'✅ "'+ts[i].name+'" completed! +'+pts+' XP!','s');
+  if(ts[i].fac&&CU.phone)sendWA(ts[i],'completed');
+  loadDash();loadTasks();
+}
+
+function delTask(id){
+  S.s('t',tasks().filter(t=>!(t.id===id&&t.uid===CU.id)));
+  toast('Task removed.','err');loadDash();loadTasks();fillQSel();
+}
+
+function flt(f,el){
+  taskFilter=f;
+  document.querySelectorAll('.fc').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');renderTL();
+}
+
+function loadTasks(){renderTL();}
+function renderTL(){
+  const el=g('task-list');if(!el)return;
+  const now=new Date();
+  const blk=blocks().filter(b=>b.uid===CU.id).map(b=>b.phone||b.name);
+  let list=tasks().filter(t=>t.uid===CU.id&&!blk.includes(t.fac));
+  if(taskFilter==='pending')list=list.filter(t=>!t.done);
+  else if(taskFilter==='done')list=list.filter(t=>t.done);
+  else if(taskFilter==='overdue')list=list.filter(t=>!t.done&&t.dl&&new Date(t.dl)<now);
+  if(!list.length){el.innerHTML='<div class="empty">No tasks here! 🎉</div>';return;}
+  el.innerHTML=list.map(t=>{
+    const dl=t.dl?new Date(t.dl):null,ov=dl&&dl<now&&!t.done;
+    return`<div class="ti ${t.done?'done':''} ${ov?'ov':''}">
+      <div class="tck ${t.done?'on':''}" onclick="${t.done?'':'completeTask('+t.id+')'}"> ${t.done?'✓':''}</div>
+      <div class="tin">
+        <div class="tn2" style="${t.done?'text-decoration:line-through;':''}">${t.name}</div>
+        <div class="tm">
+          ${t.subj?`<span class="cp">${t.subj}</span>`:''}
+          <span>⭐ ${t.pts} XP</span>
+          ${dl?`<span class="${ov?'cr':''}">⏰ ${fmt(t.dl)}</span>`:''}
+          ${t.grade?`<span class="gp g${t.grade}">${t.grade} (${t.marks||0}/${t.mxM||100})</span>`:''}
+        </div>
+        <div class="ta">
+          ${!t.done?`<button class="ib" onclick="completeTask(${t.id})">✅</button>`:''}
+          ${t.fac?`<button class="ib" onclick="oQMo(${t.id})">💬</button>`:''}
+          <button class="ib" onclick="delTask(${t.id})">🗑️</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ══ DASHBOARD ══════════════════════════════════════════════════
+function loadDash(){
+  updXP();
+  const ts=tasks().filter(t=>t.uid===CU.id);
+  const tot=ts.length,dn=ts.filter(t=>t.done).length;
+  const now=new Date(),ov=ts.filter(t=>!t.done&&t.dl&&new Date(t.dl)<now).length;
+  const pe=tot-dn-ov,pct=tot?Math.round(dn/tot*100):0;
+  const C=239;
+  const dr=g('d-ring');if(dr)dr.style.strokeDashoffset=C-(pct/100)*C;
+  if(g('d-pct'))g('d-pct').textContent=pct+'%';
+  if(g('r-tot'))g('r-tot').textContent=tot+' Total';
+  if(g('r-dn')) g('r-dn').textContent=dn+' Done';
+  if(g('r-pe')) g('r-pe').textContent=pe+' Pending';
+  if(g('r-ov')) g('r-ov').textContent=ov+' Overdue';
+  if(g('st-tot'))g('st-tot').textContent=tot;
+  if(g('st-dn')) g('st-dn').textContent=dn;
+  // Upcoming
+  const ul=g('up-list');
+  if(ul){
+    const soon=ts.filter(t=>!t.done&&t.dl).sort((a,b)=>new Date(a.dl)-new Date(b.dl)).slice(0,4);
+    ul.innerHTML=soon.length?soon.map(t=>`<div class="ti"><div class="tin"><div class="tn2">${t.name}</div><div class="tm">${t.subj?`<span class="cp">${t.subj}</span>`:''}<span>⏰ ${fmt(t.dl)}</span></div></div></div>`).join(''):'<div class="empty">No upcoming tasks 🎉</div>';
+  }
+  // Weekly chart
+  const wk=[];for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const ds=d.toISOString().split('T')[0];wk.push({l:d.toLocaleDateString('en-IN',{weekday:'short'}),c:ts.filter(t=>t.done&&(t.doneAt||'').startsWith(ds)).length});}
+  const wc=g('wk-chart');
+  if(wc){if(wCh){wCh.destroy();wCh=null;}wCh=new Chart(wc,{type:'bar',data:{labels:wk.map(w=>w.l),datasets:[{data:wk.map(w=>w.c),backgroundColor:'rgba(192,132,252,0.5)',borderColor:'#c084fc',borderWidth:2,borderRadius:7}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}}}}});}
+  // Subject chart
+  const subjs=[...new Set(ts.map(t=>t.subj).filter(Boolean))];
+  const sbEl=g('sb-chart');const sbW=g('sb-wrap');
+  if(sbEl&&sbW){
+    if(sCh){sCh.destroy();sCh=null;}
+    if(!subjs.length){sbW.innerHTML='<div class="empty">Add tasks with subjects to see breakdown.</div>';}
+    else{if(!sbW.querySelector('canvas'))sbW.innerHTML='<canvas id="sb-chart"></canvas>';const el2=g('sb-chart');if(el2){sCh=new Chart(el2,{type:'doughnut',data:{labels:subjs,datasets:[{data:subjs.map(s=>ts.filter(t=>t.subj===s).length),backgroundColor:['#c084fc','#f9a8d4','#86efac','#fde68a','#93c5fd'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:10},boxWidth:10}}}}});}}
+  }
+  chkBdgs();renderBdgs();updBadge();
+  ts.filter(t=>!t.done&&t.dl).forEach(t=>schedWA(t));
+}
+
+// ══ PROGRESS ═══════════════════════════════════════════════════
+function loadProg(){
+  updXP();
+  const u=users().find(x=>x.id===CU.id)||{score:0};
+  const ts=tasks().filter(t=>t.uid===CU.id);
+  const tot=ts.length,dn=ts.filter(t=>t.done).length,pct=tot?Math.round(dn/tot*100):0;
+  const C=239;const pr=g('p-ring');if(pr)pr.style.strokeDashoffset=C-(pct/100)*C;
+  if(g('p-pct'))g('p-pct').textContent=pct+'%';
+  if(g('p-xp')) g('p-xp').textContent='XP: '+(u.score||0);
+  if(g('p-dn')) g('p-dn').textContent='Done: '+dn;
+  // Grades
+  const gr=grades().filter(x=>x.uid===CU.id);
+  const gm={A:4,B:3,C:2,D:1};
+  const avg=gr.length?gr.reduce((a,x)=>a+(gm[x.letter]||0),0)/gr.length:0;
+  const avgS=avg>=3.5?'A':avg>=2.5?'B':avg>=1.5?'C':avg>0?'D':'N/A';
+  if(g('p-avg'))g('p-avg').textContent='Avg: '+avgS;
+  // Grade dist chart
+  const cnt={A:0,B:0,C:0,D:0};gr.forEach(x=>{if(x.letter)cnt[x.letter]++;});
+  const gc=g('gd-chart');
+  if(gc){if(gCh){gCh.destroy();gCh=null;}gCh=new Chart(gc,{type:'bar',data:{labels:['A','B','C','D'],datasets:[{data:[cnt.A,cnt.B,cnt.C,cnt.D],backgroundColor:['#86efac','#93c5fd','#fde68a','#fb7185'],borderRadius:7,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}}}}});}
+  // Subject rings
+  const subjs=[...new Set(ts.map(t=>t.subj).filter(Boolean))];
+  const cols=['#c084fc','#f9a8d4','#86efac','#fde68a','#93c5fd'];
+  const sr=g('s-rings');
+  if(sr){if(!subjs.length){sr.innerHTML='<div class="empty">Add tasks with subjects to see rings.</div>';}
+  else sr.innerHTML=subjs.map((s,i)=>{const stot=ts.filter(t=>t.subj===s).length,sdn=ts.filter(t=>t.subj===s&&t.done).length,sp=stot?Math.round(sdn/stot*100):0,off=188-(sp/100*188),c=cols[i%cols.length];return`<div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><div style="position:relative;width:70px;height:70px;"><svg width="70" height="70" viewBox="0 0 70 70" style="transform:rotate(-90deg)"><circle fill="none" stroke="var(--bd)" stroke-width="8" cx="35" cy="35" r="30"/><circle fill="none" stroke="${c}" stroke-width="8" stroke-linecap="round" cx="35" cy="35" r="30" stroke-dasharray="188" stroke-dashoffset="${off}" style="transition:stroke-dashoffset .8s;"/></svg><div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;"><div style="font-family:var(--fh);font-weight:900;font-size:.95rem;color:${c};">${sp}%</div></div></div><div style="font-weight:700;font-size:.72rem;text-align:center;">${s}</div><div style="font-size:.65rem;color:var(--su);">${sdn}/${stot}</div></div>`;}).join('');}
+  // Grades table
+  const tb=g('grade-rows');if(tb){tb.innerHTML=gr.length?gr.map(x=>`<tr><td>${x.title||'Assignment'}</td><td>${x.subj||'—'}</td><td>${x.marks!=null?x.marks+'/'+x.mxM:'—'}</td><td>${x.letter?`<span class="gp g${x.letter}">${x.letter}</span>`:'—'}</td><td>${x.fb||'—'}</td></tr>`).join(''):'<tr><td colspan="5" class="empty">No grades yet</td></tr>';}
+  // Improve
+  const low=gr.filter(x=>x.letter==='C'||x.letter==='D');
+  const il=g('imp-list');if(il){il.innerHTML=low.length?low.map(x=>`<div class="im">📌 Revise: <strong>${x.title}</strong>${x.subj?' ('+x.subj+')':''} — Grade ${x.letter}</div>`).join(''):'<div class="im">✅ Great work! Keep completing tasks.</div>';}
+}
+
+// ══ QUERIES ════════════════════════════════════════════════════
+function fillQSel(){
+  const sel=g('q-sel');if(!sel)return;
+  const ts=tasks().filter(t=>t.uid===CU.id);
+  sel.innerHTML='<option value="">-- Choose a task --</option>';
+  ts.forEach(t=>{const o=document.createElement('option');o.value=t.id;o.textContent=t.name+(t.subj?' ('+t.subj+')':'');sel.appendChild(o);});
+}
+function oQMo(id){const t=tasks().find(x=>x.id===id);if(!t)return;qTaskId=id;g('q-info').textContent='Faculty: '+(t.fac||'Not set')+' | Task: '+t.name;g('q-text').value='';omo('mo-query');}
+function sendQueryMo(){
+  const text=(g('q-text').value||'').trim();if(!text){toast('Enter your query.','err');return;}
+  const t=tasks().find(x=>x.id===qTaskId);
+  if(t?.fac){const ph=t.fac.replace(/[^0-9]/g,'');window.open('https://wa.me/'+ph+'?text='+encodeURIComponent('[Taskify Query]\nTask: '+t.name+'\nStudent: '+CU.name+'\n\nQuery: '+text),'_blank');}
+  svQ(qTaskId,text);cmo('mo-query');toast('Query sent! 📲');
+}
+function sendDirect(){
+  const id=parseInt(g('q-sel').value),text=(g('q-dir').value||'').trim();
+  if(!id){toast('Select a task.','err');return;}if(!text){toast('Enter your query.','err');return;}
+  const t=tasks().find(x=>x.id===id);
+  if(t?.fac){const ph=t.fac.replace(/[^0-9]/g,'');window.open('https://wa.me/'+ph+'?text='+encodeURIComponent('[Taskify Query]\nTask: '+t.name+'\nStudent: '+CU.name+'\n\nQuery: '+text),'_blank');}
+  svQ(id,text);g('q-dir').value='';g('q-sel').value='';toast('Query sent! 📲');loadQHist();
+}
+function svQ(tid,text){const qs=queries();qs.unshift({id:Date.now(),uid:CU.id,tid,text,at:new Date().toISOString()});S.s('qr',qs);}
+function loadQHist(){const el=g('q-hist');if(!el)return;const qs=queries().filter(q=>q.uid===CU.id);el.innerHTML=qs.length?qs.slice(0,10).map(q=>`<div style="padding:7px 10px;background:var(--bg);border-radius:8px;margin-bottom:5px;"><strong style="font-size:.82rem;">${q.text}</strong><small style="display:block;color:var(--su);margin-top:2px;">${new Date(q.at).toLocaleString()}</small></div>`).join(''):'<div class="empty">No queries yet.</div>';}
+
+// ══ SAFETY ═════════════════════════════════════════════════════
+function doReport(){
+  const name=(g('sf-n').value||'').trim(),reason=(g('sf-r').value||'').trim();
+  if(!name||!reason){toast('Fill in name and reason.','err');return;}
+  const rs=reports();rs.unshift({id:Date.now(),rUid:CU.id,rName:CU.name,name,reason,at:new Date().toISOString()});S.s('rp',rs);
+  toast('Report submitted.');g('sf-n').value='';g('sf-r').value='';
+}
+function doBlock(){
+  const name=(g('sf-n').value||'').trim(),phone=(g('sf-ph').value||'').trim(),reason=(g('sf-r').value||'').trim();
+  if(!name){toast('Enter faculty name.','err');return;}
+  const bl=blocks();bl.unshift({id:Date.now(),uid:CU.id,name,phone,reason,at:new Date().toISOString()});S.s('bl',bl);
+  doReport();toast(name+' blocked. Their tasks are hidden.','err');
+  g('sf-ph').value='';loadBlocked();
+}
+function loadBlocked(){
+  const el=g('bl-list');if(!el)return;
+  const bl=blocks().filter(b=>b.uid===CU.id);
+  el.innerHTML=bl.length?bl.map(b=>`<div class="bi"><div class="av">🚫</div><div style="flex:1"><strong>${b.name}</strong>${b.phone?`<br><small style="color:var(--su);">${b.phone}</small>`:''}</div><button class="btn bo bsm" onclick="unblk(${b.id})">Unblock</button></div>`).join(''):'<div class="empty">No faculty blocked.</div>';
+}
+function unblk(id){S.s('bl',blocks().filter(b=>b.id!==id));toast('Faculty unblocked.');loadBlocked();}
+
+// ══ WA REMINDERS ═══════════════════════════════════════════════
+const scheduled=new Set();
+function schedWA(task){
+  if(!task.dl||scheduled.has(task.id+'_sched'))return;
+  scheduled.add(task.id+'_sched');
+  const dl=new Date(task.dl).getTime(),now=Date.now();
+  [{ms:24*60*60*1000,lb:'1 day'},{ms:2*60*60*1000,lb:'2 hours'},{ms:10*60*1000,lb:'10 minutes'}].forEach(({ms,lb})=>{
+    const delay=dl-ms-now;
+    if(delay>0&&delay<48*60*60*1000)setTimeout(()=>{toast('⏰ "'+task.name+'" due in '+lb+'!','err');pNotif(CU.id,'⏰ "'+task.name+'" is due in '+lb+'!','u');if(CU.phone)sendWA(task,lb);},delay);
+  });
+}
+function sendWA(task,type){
+  const ph=(CU.phone||'').replace(/[^0-9]/g,'');if(!ph)return;
+  const msg=type==='completed'?'✅ [Taskify] Completed "'+task.name+'"! Great job, '+CU.name+'!':'⏰ [Taskify] "'+task.name+'" is due in '+type+'!';
+  window.open('https://wa.me/'+ph+'?text='+encodeURIComponent(msg),'_blank');
+}
+
+// ══ TEACHER ════════════════════════════════════════════════════
+function addAssignment(){
+  const title=(g('a-title').value||'').trim(),dt=g('a-date').value;
+  if(!title||!dt){toast('Title and deadline date required.','err');return;}
+  const subj=(g('a-subj').value||'').trim(),desc=(g('a-desc').value||'').trim(),tm=g('a-time').value||'23:59',max=parseInt(g('a-marks').value)||100;
+  const as=assigns();
+  as.unshift({id:Date.now(),tuid:CU.id,tname:CU.name,tph:CU.phone||'',title,subj,desc,dl:dt+'T'+tm,max,at:new Date().toISOString()});
+  S.s('as',as);cmo('mo-assign');toast('Assignment posted! 📋');
+  ['a-title','a-subj','a-desc'].forEach(id=>{if(g(id))g(id).value='';});
+  g('a-date').value='';g('a-time').value='23:59';g('a-marks').value='100';
+  renderTA();
+}
+function renderTA(){
+  const el=g('tc-alist');if(!el)return;
+  const as=assigns().filter(a=>a.tuid===CU.id);
+  el.innerHTML=as.length?as.map(a=>`<div class="sc" style="margin-bottom:.75rem;"><div style="display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem;flex-wrap:wrap;"><div><div style="font-weight:800;">📋 ${a.title} ${a.subj?`<span class="cp">${a.subj}</span>`:''}</div><div style="font-size:.76rem;color:var(--su);margin:.22rem 0;">⏰ ${fmt(a.dl)} | Max: ${a.max} marks</div>${a.desc?`<p style="font-size:.78rem;color:var(--su);">${a.desc}</p>`:''}</div><button class="btn br bsm" onclick="delA(${a.id})">Delete</button></div></div>`).join(''):'<div class="empty">No assignments yet.</div>';
+}
+function delA(id){S.s('as',assigns().filter(a=>!(a.id===id&&a.tuid===CU.id)));toast('Assignment removed.','err');renderTA();}
+
+function renderGP(){
+  const el=g('tc-gpanel');if(!el)return;
+  const as=assigns().filter(a=>a.tuid===CU.id);
+  const stus=users().filter(u=>u.role==='student');
+  if(!as.length){el.innerHTML='<div class="empty">No assignments to grade.</div>';return;}
+  if(!stus.length){el.innerHTML='<div class="empty">No students registered yet.</div>';return;}
+  el.innerHTML=as.map(a=>`<div class="sc" style="margin-bottom:.85rem;"><div style="font-weight:800;font-size:.9rem;margin-bottom:.65rem;">📋 ${a.title} <span style="font-size:.75rem;color:var(--su);">Max: ${a.max}</span></div>${stus.map(s=>{const eg=grades().find(x=>x.aid===a.id&&x.uid===s.id)||{};return`<div style="display:flex;align-items:center;gap:.55rem;margin-bottom:.45rem;flex-wrap:wrap;"><span style="min-width:120px;font-weight:600;font-size:.82rem;">${s.name}</span><input type="number" min="0" max="${a.max}" placeholder="Marks" value="${eg.marks||''}" id="m_${a.id}_${s.id}" style="width:70px;border:1.5px solid var(--bd);border-radius:7px;padding:4px 7px;background:var(--bg);color:var(--tx);font-family:var(--fb);font-size:.8rem;"><select id="g_${a.id}_${s.id}" style="border:1.5px solid var(--bd);border-radius:7px;padding:4px 7px;background:var(--bg);color:var(--tx);font-family:var(--fb);font-size:.8rem;">${['<option value="">Grade</option>',...['A','B','C','D'].map(l=>`<option ${eg.letter===l?'selected':''}>${l}</option>`)].join('')}</select><input type="text" placeholder="Feedback" value="${eg.fb||''}" id="f_${a.id}_${s.id}" style="flex:1;min-width:90px;border:1.5px solid var(--bd);border-radius:7px;padding:4px 7px;background:var(--bg);color:var(--tx);font-family:var(--fb);font-size:.8rem;"><button class="btn bg bsm" onclick="svGr(${a.id},${s.id},${a.max},'${s.name}','${a.title}','${a.subj||''}')">Save ✓</button></div>`}).join('')}</div>`).join('');
+}
+
+function svGr(aid,uid,mx,sn,title,subj){
+  const marks=parseInt(g('m_'+aid+'_'+uid).value)||0,letter=g('g_'+aid+'_'+uid).value,fb=(g('f_'+aid+'_'+uid).value||'').trim();
+  if(!letter){toast('Select a grade.','err');return;}
+  const gr=grades(),i=gr.findIndex(x=>x.aid===aid&&x.uid===uid);
+  const entry={id:Date.now(),aid,uid,marks,mxM:mx,letter,fb,title,subj,at:new Date().toISOString()};
+  if(i>-1)gr[i]={...gr[i],...entry};else gr.push(entry);S.s('gr',gr);
+  pNotif(uid,'📊 Grade: '+letter+' ('+marks+'/'+mx+') for "'+title+'"','gd');
+  toast('Grade saved for '+sn+'! 📊');
+}
+
+function renderStuTbl(){
+  const el=g('tc-stbl');if(!el)return;
+  const stus=users().filter(u=>u.role==='student');
+  el.innerHTML=stus.length?stus.map(s=>`<tr><td>${s.name}</td><td>${s.email}</td><td>⭐ ${s.score||0}</td><td>Lv.${s.level||1}</td></tr>`).join(''):'<tr><td colspan="4" class="empty">No students yet.</td></tr>';
+}
+
+function renderTQ(){
+  const el=g('tc-qlist');if(!el)return;
+  const ts=tasks(),stus=users();
+  const qs=queries().filter(q=>{const t=ts.find(x=>x.id===q.tid);return t&&stus.find(u=>u.id===t.uid&&u.role==='student');}).slice(0,20);
+  el.innerHTML=qs.length?qs.map(q=>{
+    const t=ts.find(x=>x.id===q.tid),stu=stus.find(u=>u.id===q.uid);
+    const sn=stu?.name||'Student',ph=(stu?.phone||'').replace(/[^0-9]/g,'');
+    return`<div class="sc" style="margin-bottom:.7rem;"><div style="font-weight:700;font-size:.85rem;">💬 ${sn}</div><p style="font-size:.81rem;margin:.3rem 0;">${q.text}</p><small style="color:var(--su);">${new Date(q.at).toLocaleString()}</small>${ph?`<br><button class="btn bo bsm" style="margin-top:.4rem;" onclick="window.open('https://wa.me/${ph}?text='+encodeURIComponent('[Taskify Reply]\\nRe: ${q.text.slice(0,50).replace(/'/g,'')}\\n\\nMy reply: '),'_blank')">Reply via WhatsApp 📲</button>`:''}`;
+  }).join(''):'<div class="empty">No queries yet.</div>';
+}
+
+function renderRep(){
+  const el=g('tc-rlist');if(!el)return;
+  const rs=reports();
+  el.innerHTML=rs.length?rs.map(r=>`<div style="padding:8px 11px;border-left:4px solid var(--re);border-radius:8px;background:#fff1f2;margin-bottom:6px;"><strong>🚩 ${r.name}</strong> — by ${r.rName||'student'}<p style="font-size:.8rem;margin:.2rem 0;">${r.reason||'—'}</p><small style="color:var(--su);">${new Date(r.at).toLocaleString()}</small></div>`).join(''):'<div class="empty">No reports.</div>';
+}
+
+// ══ INIT ═══════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded',()=>{
+  const today=new Date().toISOString().split('T')[0];
+  ['t-date','a-date'].forEach(id=>{const el=g(id);if(el)el.value=today;});
+  // Try to restore session
+  const saved=S.g('sess',null);
+  if(saved&&saved.id){
+    const fresh=users().find(u=>u.id===saved.id);
+    if(fresh){CU={...fresh};delete CU.pw;S.s('sess',CU);boot();return;}
+  }
+  showPg('pg-login');
+});
+</script>
+</body>
+</html>
